@@ -28,3 +28,11 @@
  
  ## LearnedRules
  <!-- New rules are appended below this line. Do not edit above this section. —>
+
+1. [ARCH] Use lightweight in-app view switching for navigation — `App.tsx` holds `activeView: ViewId` and `role: Role` in state and renders the matching page. Do NOT add React Router unless deep-linking/browser-history is genuinely required, because the prototype must stay static-host friendly.
+2. [DATA] Navigation is data-driven in `src/data/navigation.ts`; each `NavItem` declares allowed `roles`, and `navSectionsForRole(role)` filters the menu. Add new screens by adding a `ViewId` to `src/types/transact.ts`, an entry to `navigation.ts`, and metadata to `src/data/views.ts` — not by hardcoding nav.
+3. [UX] Never communicate status by color alone (accessibility). Status/priority/SLA indicators pair color with a label and/or shape — follow `StatusChip`, `PriorityBadge`, `SlaIndicator`.
+4. [TOOL] Use `lucide-react` for all icons; map icon-name strings stored in data to components (see `components/layout/navIcons.tsx`, `KpiCard`) rather than importing icons into data files.
+5. [STYLE] Use the `cn()` helper in `src/utils/cn.ts` for conditional Tailwind classes. Tailwind is v4 (no `tailwind.config.js`); global styles live in `src/index.css` via `@import "tailwindcss"`.
+6. [CODE] Keep mock data in `src/data/` and shared domain types in `src/types/transact.ts`. Export status/priority/etc. arrays (e.g. `BATCH_STATUSES`) alongside their union types so filters and UIs iterate from one source of truth.
+7. [PROCESS] Before considering a change done, run `npm run build` and `npm run lint` — both must pass clean (the build runs `tsc -b`, so type errors fail it).

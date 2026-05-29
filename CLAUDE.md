@@ -5,6 +5,16 @@ Guidance for Claude Code and other AI coding agents working in this repository.
 > **Read [AGENT_RULES.md](AGENT_RULES.md) first.**
 > `AGENT_RULES.md` holds the self-correcting learned ruleset for this project. If a rule there conflicts with anything in this file, the rule wins. Newer or higher-numbered rules override older rules.
 
+## Project Boundary
+
+This repository root is the folder named `transact-ux-prototype`.
+
+Claude must treat the current repository root as the project boundary and must only read, modify, create, delete, install dependencies, or run commands inside this repository unless explicitly instructed otherwise.
+
+Before making changes, Claude must confirm that the current working directory is inside a folder named `transact-ux-prototype`.
+
+Do not inspect or modify sibling projects outside this repository.
+
 ## What this is
 
 This repository is a modern **Transact UX prototype** for exploring, validating, and iterating on user experience improvements related to Tungsten Automation / Ephesoft Transact workflows.
@@ -325,13 +335,59 @@ If lint is not configured yet, either configure it or clearly state that it is n
 
 ## Current status
 
-Initial project guidance file for a new Transact UX prototype.
+First usable build complete: app shell, role-aware dashboard, and batch queue.
 
-Update this section after the first prototype is created to reflect:
+### Routing / navigation
 
-* Actual routes/screens
-* Actual components
-* Actual mock data files
-* Actual deployment target
-* Actual scripts
-* Any deviations from the recommended stack
+Navigation uses **lightweight in-app view switching**, not React Router. `App.tsx`
+holds `activeView` (a `ViewId`) and `role` (`Role`) in React state and renders the
+matching page. This keeps the prototype static-host friendly with zero routing
+deps. Reach for React Router only if deep-linking or browser-history navigation
+becomes a real requirement.
+
+Switching role in the top bar reshapes the sidebar (`navSectionsForRole`) and the
+dashboard framing; if the active view is hidden from the new role, it falls back
+to the dashboard.
+
+### Built screens
+
+* `pages/Dashboard.tsx` — welcome header, 6 KPI cards, work queue cards, Import →
+  Export workflow overview, recent activity feed.
+* `pages/BatchQueue.tsx` — filterable batch instance table (status / priority /
+  batch class chip filters) with empty state.
+* `pages/ComingSoon.tsx` — placeholder for deferred screens (Review, Validation,
+  Batch Classes, Extraction Rules, Exports, Reports, System Health). Copy comes
+  from `data/views.ts`.
+
+### Key components
+
+* `components/layout/` — `AppShell`, `Sidebar`, `TopBar`, `navIcons`.
+* `components/ui/` — `Card`/`CardHeader`, `StatusChip`, `PriorityBadge`,
+  `SlaIndicator`.
+* `components/dashboard/` — `KpiCard`, `WorkQueueCard`, `RecentActivity`,
+  `WorkflowOverview`.
+* `components/batches/` — `BatchTable`, `FilterChipGroup`.
+
+### Mock data (`src/data/`)
+
+`mockBatches.ts`, `mockDashboard.ts` (KPIs, work queues, activity, workflow stage
+stats), `navigation.ts`, `users.ts`, `views.ts`. Shared types live in
+`src/types/transact.ts`; the small `cn` helper lives in `src/utils/cn.ts`.
+
+### Stack deviations / additions
+
+* Added **lucide-react** for icons (it is in the recommended stack table).
+* Tailwind **v4** (configured via `@tailwindcss/vite` + `@import "tailwindcss"`
+  in `src/index.css`; no `tailwind.config.js`).
+* No React Router, Recharts, or shadcn/ui yet — not needed for this pass.
+
+### Deployment target
+
+Not yet chosen. Build is static-host friendly (`npm run build` → `dist/`).
+`vite.config.ts` has no `base` set, so configure it before deploying under a
+GitHub Pages subpath.
+
+### Verified
+
+`npm run build` and `npm run lint` both pass clean; `npm run dev` serves at
+`http://localhost:5173/`.
