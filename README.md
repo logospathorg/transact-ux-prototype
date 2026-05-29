@@ -143,15 +143,16 @@ Example statuses:
 
 ## Technology Stack
 
-This project uses:
+This prototype is built with a modern React frontend stack optimized for fast iteration, clean component development, and easy deployment.
 
-* React
-* TypeScript
-* Vite
-* Tailwind CSS
-* Local mock data
-
-The prototype is frontend-first and does not require a backend service for the initial build.
+- **React 19** – Frontend UI framework
+- **TypeScript 6** – Type-safe JavaScript for more reliable development
+- **Vite 8** – Fast local development server and production build tool
+- **Tailwind CSS 4** – Utility-first styling system
+- **Lucide React** – Icon library for clean, modern UI icons
+- **ESLint** – Code quality and linting
+- **npm / Node.js** – Package management and development runtime
+- **GitHub** – Source control and project collaboration
 
 ## Recommended Project Structure
 
